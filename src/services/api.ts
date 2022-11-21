@@ -23,7 +23,7 @@ const api = axios.create({
 
 api.defaults.withCredentials = true;
 api.defaults.headers['Access-Control-Allow-Origin'] = isDev
-	? 'http://localhost:8080'
+	? 'http://localhost:3000'
 	: `https://playout.network`;
 
 export { api };
