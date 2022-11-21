@@ -78,7 +78,7 @@ const userCreateSchema = Yup.object().shape({
 			'username-valid',
 			'O nome de usuário já está em uso',
 			async (value) => {
-				const { data } = await User.findUsers<{ data: { username: string }[] }>(
+				const { data } = await User.findUsers<{ username: string }>(
 					{ username: value },
 					{ username: true },
 				);

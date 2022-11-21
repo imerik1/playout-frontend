@@ -4,10 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "set ENVIRONMENT=development && next dev",
-		"prebuild": "npm run lint",
-		"build": "next build",
+		"build": "set ENVIRONMENT=production && next build",
 		"start": "set ENVIRONMENT=production && next start",
-		"lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
 		"prettier": "prettier --write .",
 		"test": "jest --watchAll --coverage",
 		"test:ci": "jest --ci"
@@ -39,7 +37,6 @@
 		"babel-loader": "8.3.0",
 		"eslint": "8.27.0",
 		"eslint-config-next": "13.0.4",
-		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-prettier": "4.2.1",
 		"eslint-plugin-react": "7.31.10",
 		"prettier": "2.7.1",

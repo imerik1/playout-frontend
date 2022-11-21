@@ -33,7 +33,7 @@ const AutoComplete = () => {
 			onClose();
 			return;
 		}
-		const { data } = await User.findUsers<{ data: UserSearch[] }>(
+		const { data } = await User.findUsers<UserSearch>(
 			{
 				username: {
 					contains: username,

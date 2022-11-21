@@ -59,7 +59,7 @@ class User {
 	}
 
 	static async getProfile<T>(query: Partial<QueryUser>) {
-		return await api.post<T>('v1/user/profile', { query });
+		return await api.post<{ data: T }>('v1/user/profile', { query });
 	}
 
 	static async signOut() {
@@ -67,7 +67,7 @@ class User {
 	}
 
 	static async findUsers<T>(by: Partial<ByUser>, query: Partial<QueryUser>) {
-		return await api.post<T>('v1/user/all', { by, query });
+		return await api.post<{ data: T[] }>('v1/user/all', { by, query });
 	}
 
 	static async signUp(user: UserSignUp) {

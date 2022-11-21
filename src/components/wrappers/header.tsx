@@ -70,7 +70,7 @@ const HeaderWithAuth: React.FC<PropsWithChildren<HeaderProps>> = ({
 		const getProfile = async () => {
 			const {
 				data: { data },
-			} = await User.getProfile({
+			} = await User.getProfile<Profile>({
 				metadata: {
 					select: {
 						image_photo: true,
