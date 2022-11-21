@@ -16,7 +16,7 @@ import {
 } from '~/components';
 
 import { NextPage } from 'next';
-import { REGEX_PASSWORD } from '~/utils/contants';
+import { PLAYOUT_JWT, REGEX_PASSWORD } from '~/utils/contants';
 import {
 	Modal,
 	ModalBody,
@@ -26,7 +26,6 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	StackDivider,
-	useControllableState,
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
@@ -37,6 +36,7 @@ import { useRouter } from 'next/router';
 import withoutAuth from '~/components/hoc/withoutAuth';
 import moment from 'moment';
 import { useState } from 'react';
+import { setCookie } from 'cookies-next';
 
 type Auth = {
 	email: string;
@@ -144,7 +144,15 @@ const IndexPage: NextPage = () => {
 	const handleLogin = async (auth: Auth) => {
 		setLoading(true);
 		User.signIn(auth)
-			.then(() => {
+			.then(({ data }) => {
+				setCookie(PLAYOUT_JWT, data.data, {
+					path: '/',
+					expires: auth.keep_connected
+						? moment().utc().add(200, 'year').toDate()
+						: undefined,
+					sameSite: 'none',
+					secure: true,
+				});
 				router.push('/dashboard');
 			})
 			.catch((err: AxiosError<ResponseError>) => {

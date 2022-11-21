@@ -1,4 +1,4 @@
-const { ENVIRONMENT = 'production', DOMAIN } = process.env;
+const { ENVIRONMENT = 'production', BACKEND_URL } = process.env;
 
 console.warn(`Running in ${ENVIRONMENT}`);
 
@@ -8,7 +8,7 @@ const nextConfig = {
 	swcMinify: true,
 	publicRuntimeConfig: {
 		ENVIRONMENT: ENVIRONMENT.trim(),
-		DOMAIN: DOMAIN.trim(),
+		BACKEND_URL: BACKEND_URL.trim(),
 	},
 	images: {
 		domains: ['playout.network'],

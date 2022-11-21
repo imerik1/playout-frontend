@@ -3,7 +3,7 @@ import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
 
-const { ENVIRONMENT, DOMAIN } = publicRuntimeConfig;
+const { ENVIRONMENT, BACKEND_URL } = publicRuntimeConfig;
 const isDev = ENVIRONMENT === 'development';
 
 export type ResponseError = {
@@ -18,7 +18,7 @@ export type ResponseError = {
 };
 
 const api = axios.create({
-	baseURL: isDev ? 'http://localhost:8080' : `https://api.${DOMAIN}/`,
+	baseURL: isDev ? 'http://localhost:8080' : `${BACKEND_URL}`,
 });
 
 api.defaults.withCredentials = true;

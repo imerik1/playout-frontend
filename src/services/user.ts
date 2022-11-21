@@ -47,7 +47,7 @@ type QueryUser = {
 
 class User {
 	static async signIn(user: UserSignIn | {} = {}) {
-		return await api.post<void>('v1/auth/sign-in', user);
+		return await api.post<{ data: string }>('v1/auth/sign-in', user);
 	}
 
 	static async forgotPassword(email: string) {
