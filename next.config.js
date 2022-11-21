@@ -1,4 +1,4 @@
-const { ENVIRONMENT, DOMAIN } = process.env;
+const { ENVIRONMENT = 'production', DOMAIN } = process.env;
 
 console.warn(`Running in ${ENVIRONMENT}`);
 

@@ -3,9 +3,9 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "set ENVIRONMENT=development && next dev",
-		"build": "set ENVIRONMENT=production && next build",
-		"start": "set ENVIRONMENT=production && next start",
+		"dev": "set ENVIRONMENT=development next dev",
+		"build": "set ENVIRONMENT=production next build",
+		"start": "set ENVIRONMENT=production next start",
 		"prettier": "prettier --write .",
 		"test": "jest --watchAll --coverage",
 		"test:ci": "jest --ci"
