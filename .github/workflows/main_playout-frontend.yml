@@ -32,7 +32,7 @@ jobs:
           yarn build
 
       - name: Deploy in Azure App Service
-        uses: azure/webapp-deploy@v2
+        uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: '${{ env.AZURE_WEBAPP_PATH }}'
