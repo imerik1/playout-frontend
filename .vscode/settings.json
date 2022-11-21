@@ -1,8 +1,19 @@
 {
-  "appService.zipIgnorePattern": [
-    "node_modules{,/**}",
-    ".vscode{,/**}"
-  ],
-  "appService.defaultWebAppToDeploy": "/subscriptions/bb0d12d8-da27-4a7c-8c1d-92a879a350c6/AppServices/subscriptions/bb0d12d8-da27-4a7c-8c1d-92a879a350c6/resourceGroups/Playout-Network/providers/Microsoft.Web/sites/playout-frontend",
-  "appService.deploySubpath": "."
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"prettier.arrowParens": "always",
+	"prettier.endOfLine": "lf",
+	"prettier.tabWidth": 2,
+	"prettier.useTabs": true,
+	"prettier.prettierPath": "../.prettierrc",
+	"prettier.semi": true,
+	"prettier.trailingComma": "all",
+	"prettier.useEditorConfig": true,
+	"prettier.ignorePath": "./.prettierignore",
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[dotenv]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	}
 }
