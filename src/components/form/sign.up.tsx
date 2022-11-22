@@ -33,6 +33,9 @@ const SignUp: React.FC<PropsWithChildren<SignUpProps>> = ({ control }) => {
 				control={control}
 				name="username"
 				inputProps={{
+					onChange: (e) => {
+						e.target.value = e.target?.value?.toLowerCase() || '';
+					},
 					type: 'text',
 					placeholder: 'nome de usuário',
 					required: true,

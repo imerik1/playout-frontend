@@ -4,14 +4,14 @@ import {
 	Icon,
 	Image,
 	Input,
-	StackDivider,
+	Spinner,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { User } from '~/services';
-import { H1, H2, NormalText, SmallText } from '../text';
+import { NormalText, SmallText } from '../text';
 
 type UserSearch = {
 	first_name: string;
@@ -24,35 +24,44 @@ type UserSearch = {
 
 const AutoComplete = () => {
 	const { isOpen, onClose, onOpen } = useDisclosure();
+	const [loading, setLoading] = useState(false);
 	const [users, setUsers] = useState<UserSearch[]>([]);
 	let delayTimer: string | number | NodeJS.Timeout | undefined;
 
-	const findUsers = async (username: string) => {
-		if (!username) {
+	const findUsers = useCallback(
+		async (username: string) => {
 			setUsers([]);
-			onClose();
-			return;
-		}
-		const { data } = await User.findUsers<UserSearch>(
-			{
-				username: {
-					contains: username,
-				},
-			},
-			{
-				first_name: true,
-				last_name: true,
-				username: true,
-				metadata: {
-					select: {
-						image_photo: true,
+			if (!username) {
+				onClose();
+				return;
+			}
+			setLoading(true);
+			onOpen();
+			const { data } = await User.findUsers<UserSearch>(
+				{
+					username: {
+						contains: username.toLowerCase(),
 					},
 				},
-			},
-		);
-		onOpen();
-		setUsers(data.data);
-	};
+				{
+					first_name: true,
+					last_name: true,
+					username: true,
+					metadata: {
+						select: {
+							image_photo: true,
+						},
+					},
+				},
+				{
+					take: 6,
+				},
+			);
+			setLoading(false);
+			setUsers(data.data);
+		},
+		[delayTimer],
+	);
 
 	return (
 		<Box position="relative" width="100%" maxW="400px">
@@ -76,7 +85,7 @@ const AutoComplete = () => {
 					clearTimeout(delayTimer);
 					delayTimer = setTimeout(() => {
 						findUsers(e.target.value);
-					}, 1000);
+					}, 200);
 				}}
 				onFocus={() => {
 					if (users.length > 0) {
@@ -88,14 +97,14 @@ const AutoComplete = () => {
 				}}
 				borderTopLeftRadius={8}
 				borderTopRightRadius={8}
-				borderBottomRightRadius={users.length > 0 && isOpen ? 0 : 8}
-				borderBottomLeftRadius={users.length > 0 && isOpen ? 0 : 8}
+				borderBottomRightRadius={isOpen ? 0 : 8}
+				borderBottomLeftRadius={isOpen ? 0 : 8}
 				_focus={{ borderColor: 'black' }}
 				_active={{ borderColor: 'black' }}
 				_hover={{ borderColor: 'black' }}
 				_placeholder={{ color: 'black' }}
 			/>
-			{users.length > 0 && isOpen && (
+			{isOpen && (
 				<VStack
 					border={'1px solid black'}
 					position="absolute"
@@ -106,6 +115,24 @@ const AutoComplete = () => {
 					zIndex={1000}
 					width="100%"
 				>
+					{loading && (
+						<VStack
+							cursor="pointer"
+							_hover={{ bgColor: 'primary.300' }}
+							py={2}
+							px={4}
+							justify="center"
+							align="center"
+							w="100%"
+						>
+							<Spinner />
+						</VStack>
+					)}
+					{users.length === 0 && !loading && (
+						<VStack py={2} px={4} justify="center" align="center" w="100%">
+							<NormalText>Não encontramos nenhum usuário</NormalText>
+						</VStack>
+					)}
 					{users.map((user) => {
 						return (
 							<VStack

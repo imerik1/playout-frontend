@@ -49,6 +49,11 @@ type QueryUser = {
 	};
 };
 
+type QueryPaginated = {
+	take?: number;
+	index?: number;
+};
+
 class User {
 	static async signIn(
 		user: UserSignIn | {} = {},
@@ -113,9 +118,13 @@ class User {
 		return await api.delete('v1/auth/sign-out');
 	}
 
-	static async findUsers<T>(by: Partial<ByUser>, query: Partial<QueryUser>) {
+	static async findUsers<T>(
+		by: Partial<ByUser>,
+		query: Partial<QueryUser>,
+		{ take = 10, index = 1 }: QueryPaginated = { take: 10, index: 1 },
+	) {
 		return await api.post<{ data: T[] }>(
-			'v1/user/all',
+			`v1/user/all?take=${take}&index=${index}`,
 			{ by, query },
 			{
 				headers: {
