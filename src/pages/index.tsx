@@ -133,11 +133,76 @@ const IndexPage: NextPage = () => {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const toast = useToast();
+
+	const userCreateSchema = Yup.object().shape({
+		first_name: Yup.string().required('o primeiro nome é obrigatório'),
+		last_name: Yup.string().required('o segundo nome é obrigatório'),
+		username: Yup.string()
+			.required('o nome de usuário é obrigatório')
+			.test(
+				'username-valid',
+				'o nome de usuário já está em uso',
+				async (value) => {
+					setLoading(true);
+					const { data } = await User.findUsers<{ username: string }>(
+						{ username: value },
+						{ username: true },
+					);
+					setLoading(false);
+					return data.data.length === 0;
+				},
+			),
+		password: Yup.string()
+			.required('a senha é obrigatória')
+			.min(8, 'a senha deve ter no mínimo 8 caracteres')
+			.max(16, 'a senha deve ter no máximo 16 caracteres')
+			.matches(REGEX_PASSWORD, {
+				message:
+					'a senha deve ter no mínimo 8 caracteres sendo eles no mínimo 1 número, 1 caracter especial, 1 letra maiúscula e 1 letra minúscula',
+			}),
+		confirm_password: Yup.string()
+			.required('a senha de confirmação é obrigatória')
+			.oneOf([Yup.ref('password'), null], 'as senhas devem ser iguais'),
+		email: Yup.string()
+			.required('o e-mail é obrigatório')
+			.email('o e-mail deve ser válido')
+			.test('email-valid', 'o e-mail já está em uso', async (value) => {
+				setLoading(true);
+				const { data } = await User.findUsers<{ data: { email: string }[] }>(
+					{ email: value },
+					{ email: true },
+				);
+				setLoading(false);
+				return data.data.length === 0;
+			}),
+		birthday: Yup.string()
+			.required('A data de nascimento é obrigatória')
+			.test(
+				'valid-birthday',
+				'a data de nascimento deve ser válida',
+				async (value) => {
+					const isValid = moment(value).isValid();
+					return isValid;
+				},
+			)
+			.test(
+				'older-age-birthday',
+				'você deve ser maior de 14 anos',
+				async (value) => {
+					const birthdayMoment = moment(Date.parse(value!)).utc();
+					const nowMinus14 = moment().utc().add(-14, 'year');
+					const isValid = birthdayMoment.isBefore(nowMinus14);
+					return isValid;
+				},
+			),
+	});
+
 	const { control: controlSignUp, handleSubmit: handleSubmitSignUp } =
 		useForm<SignUp>({
 			resolver: yupResolver(userCreateSchema),
 		});
-	const { control, handleSubmit, getValues, setError } = useForm<Auth>({
+
+	const { control, reset, handleSubmit, getValues, setError } = useForm<Auth>({
 		resolver: yupResolver(authSchema),
 	});
 
@@ -169,6 +234,7 @@ const IndexPage: NextPage = () => {
 					description: 'você receberá um e-mail para confirmar sua conta!',
 				});
 				onClose();
+				reset();
 			})
 			.finally(() => {
 				setLoading(false);
@@ -211,7 +277,7 @@ const IndexPage: NextPage = () => {
 					onSubmit={handleSubmit(handleLogin)}
 					gap={4}
 					flex={1}
-					minW="sm"
+					minW="200"
 					maxW="md"
 				>
 					<Input
