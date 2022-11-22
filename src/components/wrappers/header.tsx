@@ -48,6 +48,7 @@ const HeaderWithAuth: React.FC<PropsWithChildren<HeaderProps>> = ({
 		bgColor: 'primary.900',
 		py: 2,
 		border: '1px solid black',
+		px: 2,
 	};
 	const containerStyles: StackProps = {
 		maxW: 'container.lg',
