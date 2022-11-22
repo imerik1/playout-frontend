@@ -35,6 +35,7 @@ const ConfirmAccount: NextPage<ConfirmAccountProps> = ({
 			</Layout>
 		);
 	}
+
 	return (
 		<Layout>
 			<Main flexDirection="column" gap={10}>
