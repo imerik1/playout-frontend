@@ -31,7 +31,7 @@ const Checkbox: React.FC<PropsWithChildren<CheckboxProps>> = ({
 	children,
 	control,
 	label,
-	inputProps: { type, ...inputProps },
+	inputProps: { type, id, ...inputProps },
 	name,
 }) => {
 	return (
@@ -64,9 +64,12 @@ const Checkbox: React.FC<PropsWithChildren<CheckboxProps>> = ({
 							_focus={{ borderColor: 'primary.900' }}
 							_active={{ borderColor: 'primary.900' }}
 							_hover={{ borderColor: 'primary.900' }}
+							inputProps={{
+								id,
+							}}
 						/>
 						{label && (
-							<FormLabel m={0} p={0} fontSize="sm" htmlFor={inputProps.id}>
+							<FormLabel m={0} p={0} fontSize="sm" htmlFor={id}>
 								{label}
 							</FormLabel>
 						)}
