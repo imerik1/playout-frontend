@@ -61,6 +61,7 @@ class User {
 				},
 			})
 			.then(({ data }) => {
+				deleteCookie(PLAYOUT_JWT);
 				setCookie(PLAYOUT_JWT, data.data, {
 					path: '/',
 					expires: !session
