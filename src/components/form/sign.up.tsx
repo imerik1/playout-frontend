@@ -1,14 +1,18 @@
 import moment from 'moment';
 import { PropsWithChildren } from 'react';
-import { Control, UseFormHandleSubmit } from 'react-hook-form';
+import { Control, UseFormHandleSubmit, UseFormSetValue } from 'react-hook-form';
 import { Input } from '../interactions';
 
 type SignUpProps = {
 	control: Control<any, any>;
 	handleSubmit: UseFormHandleSubmit<any>;
+	setValue: UseFormSetValue<any>;
 };
 
-const SignUp: React.FC<PropsWithChildren<SignUpProps>> = ({ control }) => {
+const SignUp: React.FC<PropsWithChildren<SignUpProps>> = ({
+	control,
+	setValue,
+}) => {
 	return (
 		<>
 			<Input
@@ -34,7 +38,7 @@ const SignUp: React.FC<PropsWithChildren<SignUpProps>> = ({ control }) => {
 				name="username"
 				inputProps={{
 					onChange: (e) => {
-						e.target.value = e.target?.value?.toLowerCase() || '';
+						setValue('username', e.target?.value?.toLowerCase());
 					},
 					type: 'text',
 					placeholder: 'nome de usuário',

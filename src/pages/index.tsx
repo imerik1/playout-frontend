@@ -138,11 +138,14 @@ const IndexPage: NextPage = () => {
 			),
 	});
 
-	const { control: controlSignUp, handleSubmit: handleSubmitSignUp } =
-		useForm<SignUp>({
-			mode: 'onBlur',
-			resolver: yupResolver(userCreateSchema),
-		});
+	const {
+		control: controlSignUp,
+		handleSubmit: handleSubmitSignUp,
+		setValue,
+	} = useForm<SignUp>({
+		mode: 'onBlur',
+		resolver: yupResolver(userCreateSchema),
+	});
 
 	const { control, reset, handleSubmit, getValues, setError } = useForm<Auth>({
 		mode: 'onBlur',
@@ -281,6 +284,7 @@ const IndexPage: NextPage = () => {
 							{!loading && <ModalCloseButton />}
 							<ModalBody display="flex" flexDirection="column" gap={4}>
 								<SignUp
+									setValue={setValue}
 									handleSubmit={handleSubmitSignUp}
 									control={controlSignUp}
 								/>
