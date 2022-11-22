@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import moment from 'moment';
-import { api } from '~/services';
+import { api, ResponseError } from '~/services';
 import { PLAYOUT_JWT } from '~/utils';
 
 type UserSignIn = {
@@ -53,7 +53,7 @@ class User {
 	static async signIn(
 		user: UserSignIn | {} = {},
 		session: boolean = false,
-	): Promise<void | AxiosError<{ data: string }>> {
+	): Promise<any> {
 		return await api
 			.post<{ data: string }>('v1/auth/sign-in', user, {
 				headers: {
@@ -71,7 +71,9 @@ class User {
 					secure: true,
 				});
 			})
-			.catch((err) => err);
+			.catch((err) => {
+				throw err;
+			});
 	}
 
 	static async forgotPassword(email: string) {

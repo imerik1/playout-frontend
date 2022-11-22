@@ -149,20 +149,22 @@ const IndexPage: NextPage = () => {
 
 	const handleLogin = async (auth: Auth) => {
 		setLoading(true);
-		User.signIn(auth, !auth.keep_connected)
-			.then(() => {
-				setTimeout(() => {
-					router.push('/dashboard', undefined, {
-						shallow: true,
-					});
-				}, 800);
-			})
-			.catch((err: AxiosError<ResponseError>) => {
+		User.signIn(auth, !auth.keep_connected).then((err) => {
+			if (err instanceof AxiosError<ResponseError>) {
 				toast({
 					title: 'não conseguimos te identificar',
-					description: err.response?.data.message || '',
+					description:
+						err.response?.data.message + ', você confirmou a conta?' || '',
 				});
-			});
+				return;
+			}
+			setTimeout(() => {
+				router.push('/dashboard', undefined, {
+					shallow: true,
+				});
+			}, 800);
+		});
+		setLoading(false);
 	};
 
 	const handleSignUp = async (user: SignUp) => {

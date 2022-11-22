@@ -12,7 +12,7 @@ const useToast = (props?: UseToastOptions) => {
 	return useT({
 		...props,
 		isClosable: true,
-		duration: 2500,
+		duration: 3500,
 		position: 'top-right',
 		render: createToast,
 	});
