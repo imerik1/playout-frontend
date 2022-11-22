@@ -18,12 +18,15 @@ export type ResponseError = {
 };
 
 const api = axios.create({
-	baseURL: isDev ? 'http://localhost:8080' : `${BACKEND_URL}`,
+	withCredentials: true,
+	baseURL: isDev
+		? 'https://f0b4-2804-14d-8e91-6d67-00-b4fb.sa.ngrok.io'
+		: `${BACKEND_URL}`,
+	headers: {
+		'Access-Control-Allow-Origin': isDev
+			? 'http://localhost:3000'
+			: `https://playout.network`,
+	},
 });
-
-api.defaults.withCredentials = true;
-api.defaults.headers['Access-Control-Allow-Origin'] = isDev
-	? 'http://localhost:3000'
-	: `https://playout.network`;
 
 export { api };

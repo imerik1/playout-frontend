@@ -19,10 +19,10 @@ const ConfirmAccount: NextPage<ConfirmAccountProps> = ({
 	useEffect(() => {
 		User.confirmAccount(confirm_account_id)
 			.then(() => {
-				setStatus('Conta confirmada com sucesso!');
+				setStatus('conta confirmada com sucesso!');
 			})
 			.catch((err: AxiosError<ResponseError>) => {
-				setStatus(err.response?.data.message || 'Ocorreu um erro inesperado');
+				setStatus(err.response?.data.message || 'ocorreu um erro inesperado');
 			});
 	}, []);
 
@@ -38,7 +38,7 @@ const ConfirmAccount: NextPage<ConfirmAccountProps> = ({
 	return (
 		<Layout>
 			<Main flexDirection="column" gap={10}>
-				<NormalText>{status}</NormalText>
+				<NormalText>{status.toLowerCase()}</NormalText>
 				<Link href="/" passHref>
 					<NormalText
 						tabIndex={0}

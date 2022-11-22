@@ -56,27 +56,27 @@ type SignUp = {
 
 const authSchema = Yup.object().shape({
 	email: Yup.string()
-		.required('O e-mail é obrigatório')
-		.email('O e-mail deve ser válido'),
+		.required('o e-mail é obrigatório')
+		.email('o e-mail deve ser válido'),
 	password: Yup.string()
-		.required('A senha é obrigatória')
-		.min(8, 'A senha deve ter no mínimo 8 caracteres')
-		.max(16, 'A senha deve ter no máximo 16 caracteres')
+		.required('a senha é obrigatória')
+		.min(8, 'a senha deve ter no mínimo 8 caracteres')
+		.max(16, 'a senha deve ter no máximo 16 caracteres')
 		.matches(REGEX_PASSWORD, {
 			message:
-				'A senha deve ter no mínimo 8 caracteres sendo eles no mínimo 1 número, 1 caracter especial, 1 letra maiúscula e 1 letra minúscula',
+				'a senha deve ter no mínimo 8 caracteres sendo eles no mínimo 1 número, 1 caracter especial, 1 letra maiúscula e 1 letra minúscula',
 		}),
 	keep_connected: Yup.bool().notRequired(),
 });
 
 const userCreateSchema = Yup.object().shape({
-	first_name: Yup.string().required('O primeiro nome é obrigatório'),
-	last_name: Yup.string().required('O segundo nome é obrigatório'),
+	first_name: Yup.string().required('o primeiro nome é obrigatório'),
+	last_name: Yup.string().required('o segundo nome é obrigatório'),
 	username: Yup.string()
-		.required('O nome de usuário é obrigatório')
+		.required('o nome de usuário é obrigatório')
 		.test(
 			'username-valid',
-			'O nome de usuário já está em uso',
+			'o nome de usuário já está em uso',
 			async (value) => {
 				const { data } = await User.findUsers<{ username: string }>(
 					{ username: value },
@@ -86,20 +86,20 @@ const userCreateSchema = Yup.object().shape({
 			},
 		),
 	password: Yup.string()
-		.required('A senha é obrigatória')
-		.min(8, 'A senha deve ter no mínimo 8 caracteres')
-		.max(16, 'A senha deve ter no máximo 16 caracteres')
+		.required('a senha é obrigatória')
+		.min(8, 'a senha deve ter no mínimo 8 caracteres')
+		.max(16, 'a senha deve ter no máximo 16 caracteres')
 		.matches(REGEX_PASSWORD, {
 			message:
-				'A senha deve ter no mínimo 8 caracteres sendo eles no mínimo 1 número, 1 caracter especial, 1 letra maiúscula e 1 letra minúscula',
+				'a senha deve ter no mínimo 8 caracteres sendo eles no mínimo 1 número, 1 caracter especial, 1 letra maiúscula e 1 letra minúscula',
 		}),
 	confirm_password: Yup.string()
-		.required('A senha de confirmação é obrigatória')
-		.oneOf([Yup.ref('password'), null], 'As senhas devem ser iguais'),
+		.required('a senha de confirmação é obrigatória')
+		.oneOf([Yup.ref('password'), null], 'as senhas devem ser iguais'),
 	email: Yup.string()
-		.required('O e-mail é obrigatório')
-		.email('O e-mail deve ser válido')
-		.test('email-valid', 'O e-mail já está em uso', async (value) => {
+		.required('o e-mail é obrigatório')
+		.email('o e-mail deve ser válido')
+		.test('email-valid', 'o e-mail já está em uso', async (value) => {
 			const { data } = await User.findUsers<{ data: { email: string }[] }>(
 				{ email: value },
 				{ email: true },
@@ -110,7 +110,7 @@ const userCreateSchema = Yup.object().shape({
 		.required('A data de nascimento é obrigatória')
 		.test(
 			'valid-birthday',
-			'A data de nascimento deve ser válida',
+			'a data de nascimento deve ser válida',
 			async (value) => {
 				const isValid = moment(value).isValid();
 				return isValid;
@@ -118,7 +118,7 @@ const userCreateSchema = Yup.object().shape({
 		)
 		.test(
 			'older-age-birthday',
-			'Você deve ser maior de 14 anos',
+			'você deve ser maior de 14 anos',
 			async (value) => {
 				const birthdayMoment = moment(Date.parse(value!)).utc();
 				const nowMinus14 = moment().utc().add(-14, 'year');
@@ -143,54 +143,56 @@ const IndexPage: NextPage = () => {
 
 	const handleLogin = async (auth: Auth) => {
 		setLoading(true);
-		User.signIn(auth)
-			.then(({ data }) => {
-				setCookie(PLAYOUT_JWT, data.data, {
-					path: '/',
-					expires: auth.keep_connected
-						? moment().utc().add(200, 'year').toDate()
-						: undefined,
-					sameSite: 'none',
-					secure: true,
-				});
-				router.push('/dashboard');
+		User.signIn(auth, !auth.keep_connected)
+			.then(() => {
+				setTimeout(() => {
+					router.push('/dashboard', undefined, {
+						shallow: true,
+					});
+				}, 800);
 			})
 			.catch((err: AxiosError<ResponseError>) => {
 				toast({
-					title: 'Conta inexistente',
+					title: 'não conseguimos te identificar',
 					description: err.response?.data.message || '',
 				});
 			});
-		setLoading(false);
 	};
 
 	const handleSignUp = async (user: SignUp) => {
 		setLoading(true);
 		user.birthday = moment(user.birthday).toISOString();
-		User.signUp(user).then(() => {
-			toast({
-				title: 'GG! Conta criada',
-				description: 'Você receberá um e-mail para confirmar sua conta!',
+		User.signUp(user)
+			.then(() => {
+				toast({
+					title: 'GG! conta criada',
+					description: 'você receberá um e-mail para confirmar sua conta!',
+				});
+				onClose();
+			})
+			.finally(() => {
+				setLoading(false);
 			});
-			onClose();
-		});
-		setLoading(false);
 	};
 
 	const forgotPassword = async () => {
 		const email = getValues('email');
+		setLoading(true);
 		User.forgotPassword(email)
 			.then(() => {
 				toast({
-					title: 'Troca de senha solicitada',
+					title: 'troca de senha solicitada',
 					description:
-						'Caso o e-mail informado exista, você receberá um link para a troca',
+						'caso o e-mail informado exista, você receberá um link para a troca',
 				});
 			})
 			.catch((err: AxiosError<ResponseError>) => {
 				setError('email', {
 					message: err.response?.data.message,
 				});
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	};
 
@@ -241,20 +243,22 @@ const IndexPage: NextPage = () => {
 					<Button isLoading={loading} type="submit">
 						entrar
 					</Button>
-					<NormalText
-						tabIndex={0}
-						role="link"
-						cursor="pointer"
-						alignSelf="center"
-						w="fit-content"
-						color="black"
-						_hover={{ textDecoration: 'underline' }}
-						onClick={forgotPassword}
-					>
-						esqueceu sua senha?
-					</NormalText>
+					{!loading && (
+						<NormalText
+							tabIndex={0}
+							role="link"
+							cursor="pointer"
+							alignSelf="center"
+							w="fit-content"
+							color="black"
+							_hover={{ textDecoration: 'underline' }}
+							onClick={forgotPassword}
+						>
+							esqueceu sua senha?
+						</NormalText>
+					)}
 					<StackDivider bgColor="black" w="100%" h="1px" />
-					<Button onClick={onOpen} mode="secondary">
+					<Button isLoading={loading} onClick={onOpen} mode="secondary">
 						criar nova conta
 					</Button>
 				</Form>
