@@ -29,7 +29,7 @@ const Notifications: React.FC<{
 			{notifications.map((notification) => {
 				const goTo = async () => {
 					if (!notification.link) return;
-					router.push(notification.link, undefined, {
+					router.push(`/${notification.link}`, undefined, {
 						shallow: true,
 					});
 				};

@@ -44,6 +44,7 @@ const AutoComplete = () => {
 				{
 					username: {
 						contains: username.toLowerCase(),
+						mode: 'insensitive',
 					},
 				},
 				{

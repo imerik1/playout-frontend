@@ -24,6 +24,7 @@ type Data = {
 	created_at: string;
 	likes: number;
 	liked: boolean;
+	yours: boolean;
 	user: {
 		username: string;
 		first_name: string;

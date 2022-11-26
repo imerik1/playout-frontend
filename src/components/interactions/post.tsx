@@ -1,4 +1,5 @@
 import { HStack, Icon, Image, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { useQuery } from 'react-query';
@@ -11,6 +12,7 @@ type Data = {
 	created_at: string;
 	likes: number | string[];
 	liked: boolean;
+	yours: boolean;
 	user: {
 		username: string;
 		first_name: string;
@@ -26,19 +28,32 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({ post }) => {
+	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const { data, isLoading, refetch } = useQuery(
 		`user/likes/${post.id}`,
 		async () => {
 			return (
-				await User.getProfile<{ posts: Data[] }>({
-					posts: {
-						where: {
-							id: post.id,
+				await User.findUsers<Data[]>(
+					{
+						posts: {
+							some: {
+								id: post.id,
+							},
 						},
 					},
-				})
-			).data.data.posts[0];
+					{
+						posts: {
+							select: {
+								likes: true,
+							},
+							where: {
+								id: post.id,
+							},
+						},
+					},
+				)
+			).data.data[0][0];
 		},
 	);
 
@@ -71,6 +86,11 @@ const Post: React.FC<Props> = ({ post }) => {
 					}
 					boxSize="70"
 					borderRadius="full"
+					onClick={() => {
+						router.push(
+							post.yours ? '/profile' : `/user/${post.user.username}`,
+						);
+					}}
 				/>
 				<VStack
 					pt={1}
@@ -79,10 +99,24 @@ const Post: React.FC<Props> = ({ post }) => {
 					spacing={-2}
 					h="100%"
 				>
-					<Text>
+					<Text
+						onClick={() => {
+							router.push(
+								post.yours ? '/profile' : `/user/${post.user.username}`,
+							);
+						}}
+					>
 						{post.user.first_name} {post.user.last_name}
 					</Text>
-					<Text>@{post.user.username}</Text>
+					<Text
+						onClick={() => {
+							router.push(
+								post.yours ? '/profile' : `/user/${post.user.username}`,
+							);
+						}}
+					>
+						@{post.user.username}
+					</Text>
 					<Text pt={2} fontSize="xs">
 						{howLongIs(post.created_at)}
 					</Text>

@@ -1,4 +1,5 @@
 import {
+	Box,
 	HStack,
 	Image,
 	Spinner,
@@ -36,7 +37,10 @@ const UserPage: NextPage = () => {
 			return (
 				await User.findUsers<Profile>(
 					{
-						username: router.query['username'],
+						username: {
+							equals: router.query['username'],
+							mode: 'insensitive',
+						},
 					},
 					{
 						username: true,
@@ -82,7 +86,7 @@ const UserPage: NextPage = () => {
 		<Layout>
 			<HeaderWithAuth />
 			<Main justifyContent="start" flexDirection="column">
-				<HStack align="start" w="100%">
+				<HStack justify="center" flexWrap="wrap" align="start" w="100%">
 					<Image
 						boxSize="140px"
 						borderRadius="full"
@@ -94,22 +98,39 @@ const UserPage: NextPage = () => {
 						}
 					/>
 					<VStack w="100%" pt={2} px={4} justify="start" align="start">
-						<HStack w="100%" justify="space-between" align="center">
-							<HStack w="fit-content">
+						<HStack
+							flexWrap="wrap"
+							w="100%"
+							justify="space-between"
+							align="center"
+						>
+							<VStack justify="start" align="start" w="fit-content">
 								<Text fontWeight="bold" fontSize="4xl">
 									{data?.first_name} {data?.last_name}
 								</Text>
 								<Text fontSize="xl">@{data?.username}</Text>
-							</HStack>
-							<Button
-								isLoading={loading}
-								onClick={handleFollowUser}
-								mode="primary"
+							</VStack>
+							<Box
+								display="flex"
+								flexDirection="column"
+								justifyContent="end"
+								alignItems="end"
 							>
-								{isLoading && <Spinner />}
-								{!isLoading &&
-									`${data?.you_follow ? 'parar de seguir' : 'seguir'}`}
-							</Button>
+								<Button
+									isLoading={loading}
+									onClick={handleFollowUser}
+									mode="primary"
+								>
+									{isLoading && <Spinner />}
+									{!isLoading &&
+										`${data?.you_follow ? 'parar de seguir' : 'seguir'}`}
+								</Button>
+								{data?.follow_you && !data.you_follow
+									? 'seguir de volta'
+									: data?.follow_you
+									? 'segue você'
+									: ''}
+							</Box>
 						</HStack>
 						<HStack pt={2}>
 							<Text fontSize="md">{data?.followers} seguidores</Text>
