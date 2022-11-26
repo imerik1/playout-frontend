@@ -13,6 +13,12 @@ const nextConfig = {
 	images: {
 		domains: ['playout.network'],
 	},
+	rewrites: async () => [
+		{
+			source: '/assets/:username/:uuid*',
+			destination: '/api/assets/:username/:uuid*',
+		},
+	],
 };
 
 module.exports = nextConfig;

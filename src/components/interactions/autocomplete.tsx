@@ -8,6 +8,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { User } from '~/services';
@@ -23,10 +24,12 @@ type UserSearch = {
 };
 
 const AutoComplete = () => {
+	const router = useRouter();
 	const { isOpen, onClose, onOpen } = useDisclosure();
 	const [loading, setLoading] = useState(false);
 	const [users, setUsers] = useState<UserSearch[]>([]);
 	let delayTimer: string | number | NodeJS.Timeout | undefined;
+	let delayTimerOnBlur: string | number | NodeJS.Timeout | undefined;
 
 	const findUsers = useCallback(
 		async (username: string) => {
@@ -93,7 +96,10 @@ const AutoComplete = () => {
 					}
 				}}
 				onBlur={() => {
-					onClose();
+					clearTimeout(delayTimerOnBlur);
+					delayTimerOnBlur = setTimeout(() => {
+						onClose();
+					}, 300);
 				}}
 				borderTopLeftRadius={8}
 				borderTopRightRadius={8}
@@ -143,6 +149,9 @@ const AutoComplete = () => {
 								justify="center"
 								align="center"
 								w="100%"
+								onClick={() => {
+									router.push(`/user/${user.username}`);
+								}}
 							>
 								<HStack
 									w="100%"
@@ -154,7 +163,7 @@ const AutoComplete = () => {
 									<Image
 										src={
 											user?.metadata.image_photo.includes('playout.network')
-												? `https://playout.network/${user?.metadata.image_photo}`
+												? `/${user?.metadata.image_photo}`
 												: `${user?.metadata.image_photo}`
 										}
 										boxSize="40px"

@@ -19,7 +19,7 @@ export type ResponseError = {
 
 const api = axios.create({
 	withCredentials: true,
-	baseURL: isDev ? 'https://api.playout.network' : `${BACKEND_URL}`,
+	baseURL: isDev ? 'http://localhost:8080' : `${BACKEND_URL}`,
 	headers: {
 		'Access-Control-Allow-Origin': isDev
 			? 'http://localhost:3000'

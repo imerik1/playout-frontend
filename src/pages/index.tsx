@@ -154,7 +154,7 @@ const IndexPage: NextPage = () => {
 
 	const handleLogin = async (auth: Auth) => {
 		setLoading(true);
-		User.signIn(auth, !auth.keep_connected).then((err) => {
+		await User.signIn(auth, !auth.keep_connected).then((err) => {
 			if (err instanceof AxiosError<ResponseError>) {
 				toast({
 					title: 'não conseguimos te identificar',
@@ -175,7 +175,7 @@ const IndexPage: NextPage = () => {
 	const handleSignUp = async (user: SignUp) => {
 		setLoading(true);
 		user.birthday = moment(user.birthday).toISOString();
-		User.signUp(user)
+		await User.signUp(user)
 			.then(() => {
 				toast({
 					title: 'GG! conta criada',
@@ -192,7 +192,7 @@ const IndexPage: NextPage = () => {
 	const forgotPassword = async () => {
 		const email = getValues('email');
 		setLoading(true);
-		User.forgotPassword(email)
+		await User.forgotPassword(email)
 			.then(() => {
 				toast({
 					title: 'troca de senha solicitada',

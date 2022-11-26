@@ -25,29 +25,55 @@ type ChangePassword = {
 	forgot_password_id: string;
 };
 
-type ByUser = {
-	[key: string]:
-		| string
-		| number
-		| {
-				contains: string;
-		  };
-};
+type ByUser =
+	| any
+	| {
+			[key: string]:
+				| string
+				| number
+				| {
+						contains: string;
+				  };
+	  };
 
-type QueryUser = {
-	first_name: boolean;
-	username: boolean;
-	email: boolean;
-	last_name: boolean;
-	birthday: boolean;
-	created_at: boolean;
-	updated_at: boolean;
-	metadata: {
-		select: {
-			image_photo: true;
-		};
-	};
-};
+type QueryUser =
+	| {
+			first_name: boolean;
+			username: boolean;
+			email: boolean;
+			last_name: boolean;
+			birthday: boolean;
+			created_at: boolean;
+			updated_at: boolean;
+			posts:
+				| {
+						select: {
+							body: boolean;
+							created_at: boolean;
+						};
+				  }
+				| boolean;
+			metadata:
+				| {
+						select: {
+							image_photo: true;
+						};
+				  }
+				| boolean;
+			notifications:
+				| {
+						select: {
+							id: boolean;
+							message: boolean;
+							read: boolean;
+							created_at: boolean;
+							type: boolean;
+							link: boolean;
+						};
+				  }
+				| boolean;
+	  }
+	| Record<string, any>;
 
 type QueryPaginated = {
 	take?: number;
@@ -81,6 +107,42 @@ class User {
 			});
 	}
 
+	static async follow(username: string) {
+		return await api.post<void>(
+			'v1/user/follow',
+			{ username },
+			{
+				headers: {
+					Authorization: getCookie(PLAYOUT_JWT),
+				},
+			},
+		);
+	}
+
+	static async likePost(post_id: string) {
+		return await api.post(
+			`v1/user/like`,
+			{ post_id },
+			{
+				headers: {
+					Authorization: getCookie(PLAYOUT_JWT),
+				},
+			},
+		);
+	}
+
+	static async getMyPosts({ take = 30, index = 1 }) {
+		return await api.post(
+			`v1/user/my-posts?take=${take}&index=${index}`,
+			{},
+			{
+				headers: {
+					Authorization: getCookie(PLAYOUT_JWT),
+				},
+			},
+		);
+	}
+
 	static async forgotPassword(email: string) {
 		return await api.post<void>(
 			'v1/user/forgot-password',
@@ -101,16 +163,27 @@ class User {
 		});
 	}
 
-	static async getProfile<T>(query: Partial<QueryUser>) {
+	static async getProfile<T>(
+		query: Partial<QueryUser>,
+		where: Record<string, any> = {},
+	) {
 		return await api.post<{ data: T }>(
 			'v1/user/profile',
-			{ query },
+			{ query, where },
 			{
 				headers: {
 					Authorization: getCookie(PLAYOUT_JWT),
 				},
 			},
 		);
+	}
+
+	static async updateUser(query: any) {
+		return await api.patch('v1/user/update', query, {
+			headers: {
+				Authorization: getCookie(PLAYOUT_JWT),
+			},
+		});
 	}
 
 	static async signOut() {
@@ -138,6 +211,18 @@ class User {
 		return await api.post('v1/user/create', user, {
 			headers: {
 				Authorization: getCookie(PLAYOUT_JWT),
+			},
+		});
+	}
+
+	static async uploadPhoto(file: File) {
+		const formData = new FormData();
+		formData.append('metadata.update.image_photo', file);
+
+		return await api.patch('v1/user/update', formData, {
+			headers: {
+				Authorization: getCookie(PLAYOUT_JWT),
+				'Content-Type': 'multipart/form-data',
 			},
 		});
 	}

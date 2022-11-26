@@ -15,6 +15,7 @@ const Main: React.FC<PropsWithChildren<ContainerProps>> = ({
 		as: 'main',
 		maxW: 'container.lg',
 		px: 4,
+		py: 6,
 	};
 	Object.assign(styles, props);
 	return <Container {...styles}>{children}</Container>;

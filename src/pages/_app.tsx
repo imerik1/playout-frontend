@@ -10,6 +10,9 @@ import { PLAYOUT_JWT } from '~/utils';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Layout, Main } from '~/components';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClientProvider = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const [authenticating, setAuthenticating] = useState(true);
@@ -40,14 +43,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	}
 
 	return (
-		<ChakraProvider theme={theme}>
-			<Head>
-				<title>Playout Network</title>
-			</Head>
-			<ToastProvider>
-				<Component {...pageProps} />
-			</ToastProvider>
-		</ChakraProvider>
+		<QueryClientProvider client={queryClientProvider}>
+			<ChakraProvider theme={theme}>
+				<Head>
+					<title>Playout Network</title>
+				</Head>
+				<ToastProvider>
+					<Component {...pageProps} />
+				</ToastProvider>
+			</ChakraProvider>
+		</QueryClientProvider>
 	);
 };
 

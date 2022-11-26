@@ -23,6 +23,7 @@ type InputProps = {
 type CheckboxProps = {
 	control: Control<any, any>;
 	label?: string;
+	defaultChecked?: boolean;
 	inputProps: CP & InputHTMLAttributes<HTMLInputElement>;
 	name: string;
 };
