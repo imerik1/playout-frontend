@@ -53,9 +53,7 @@ const UploadFile: React.FC<PropsWithChildren<UploadFileProps>> = ({
 		const file = files[0];
 
 		await User.uploadPhoto(file)
-			.then((e) => {
-				console.log(e);
-			})
+			.then((e) => {})
 			.catch((err) => console.error(err));
 
 		if (refetch) {

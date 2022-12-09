@@ -6,8 +6,17 @@ import {
 	Text,
 	VStack,
 } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { HeaderWithAuth, Layout, Main, UploadFile } from '~/components';
+import {
+	About,
+	Button,
+	HeaderWithAuth,
+	Layout,
+	Main,
+	UploadFile,
+} from '~/components';
 import { User } from '~/services';
 
 type Profile = {
@@ -22,6 +31,7 @@ type Profile = {
 };
 
 const Profile = () => {
+	const [mode, setMode] = useState('about');
 	const { data, isLoading, refetch } = useQuery('user/profile', async () => {
 		return (
 			await User.getProfile<Profile>({
@@ -80,6 +90,33 @@ const Profile = () => {
 					</VStack>
 				</HStack>
 				<StackDivider my={6} h="1px" bgColor="black" w="100%" />
+				<HStack pb={6} w="100%">
+					<Button
+						mode={mode === 'about' ? 'primary' : 'secondary'}
+						onClick={() => setMode('about')}
+					>
+						Sobre
+					</Button>
+					<Button
+						mode={mode === 'posts' ? 'primary' : 'secondary'}
+						onClick={() => setMode('posts')}
+					>
+						Publicações
+					</Button>
+					<Button
+						mode={mode === 'trophies' ? 'primary' : 'secondary'}
+						onClick={() => setMode('trophies')}
+					>
+						Trofeús
+					</Button>
+					<Button
+						mode={mode === 'experiences' ? 'primary' : 'secondary'}
+						onClick={() => setMode('experiences')}
+					>
+						Experiências
+					</Button>
+				</HStack>
+				{mode === 'about' && <About self={true} />}
 			</Main>
 		</Layout>
 	);

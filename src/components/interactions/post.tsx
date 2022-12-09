@@ -78,6 +78,7 @@ const Post: React.FC<Props> = ({ post }) => {
 		>
 			<HStack gap={4} w="100%" align="flex-start" justify="flex-start">
 				<Image
+					cursor="pointer"
 					alt={`Foto do ${post.user.username}`}
 					src={
 						post.user.metadata.image_photo.includes('wilcity')
@@ -99,6 +100,7 @@ const Post: React.FC<Props> = ({ post }) => {
 					spacing={-2}
 					h="100%"
 				>
+					cursor="pointer"
 					<Text
 						onClick={() => {
 							router.push(
@@ -109,6 +111,7 @@ const Post: React.FC<Props> = ({ post }) => {
 						{post.user.first_name} {post.user.last_name}
 					</Text>
 					<Text
+						cursor="pointer"
 						onClick={() => {
 							router.push(
 								post.yours ? '/profile' : `/user/${post.user.username}`,

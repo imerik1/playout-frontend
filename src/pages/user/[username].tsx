@@ -11,7 +11,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { Button, HeaderWithAuth, Layout, Main } from '~/components';
+import { About, Button, HeaderWithAuth, Layout, Main } from '~/components';
 import withAuth from '~/components/hoc/withAuth';
 import { User } from '~/services';
 
@@ -30,6 +30,7 @@ type Profile = {
 
 const UserPage: NextPage = () => {
 	const router = useRouter();
+	const [mode, setMode] = useState('about');
 	const [loading, setLoading] = useState(false);
 	const { data, isLoading, refetch, isFetching } = useQuery(
 		`user/${router.query['username']}`,
@@ -139,6 +140,33 @@ const UserPage: NextPage = () => {
 					</VStack>
 				</HStack>
 				<StackDivider my={6} h="1px" bgColor="black" w="100%" />
+				<HStack pb={6} w="100%">
+					<Button
+						mode={mode === 'about' ? 'primary' : 'secondary'}
+						onClick={() => setMode('about')}
+					>
+						Sobre
+					</Button>
+					<Button
+						mode={mode === 'posts' ? 'primary' : 'secondary'}
+						onClick={() => setMode('posts')}
+					>
+						Publicações
+					</Button>
+					<Button
+						mode={mode === 'trophies' ? 'primary' : 'secondary'}
+						onClick={() => setMode('trophies')}
+					>
+						Trofeús
+					</Button>
+					<Button
+						mode={mode === 'experiences' ? 'primary' : 'secondary'}
+						onClick={() => setMode('experiences')}
+					>
+						Experiências
+					</Button>
+				</HStack>
+				{mode === 'about' && <About self={false} />}
 			</Main>
 		</Layout>
 	);
