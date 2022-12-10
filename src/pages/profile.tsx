@@ -15,6 +15,7 @@ import {
 	HeaderWithAuth,
 	Layout,
 	Main,
+	Posts,
 	UploadFile,
 } from '~/components';
 import { User } from '~/services';
@@ -104,12 +105,14 @@ const Profile = () => {
 						Publicações
 					</Button>
 					<Button
+						disabled
 						mode={mode === 'trophies' ? 'primary' : 'secondary'}
 						onClick={() => setMode('trophies')}
 					>
 						Trofeús
 					</Button>
 					<Button
+						disabled
 						mode={mode === 'experiences' ? 'primary' : 'secondary'}
 						onClick={() => setMode('experiences')}
 					>
@@ -117,6 +120,7 @@ const Profile = () => {
 					</Button>
 				</HStack>
 				{mode === 'about' && <About self={true} />}
+				{mode === 'posts' && <Posts self={true} />}
 			</Main>
 		</Layout>
 	);

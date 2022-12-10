@@ -11,7 +11,14 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { About, Button, HeaderWithAuth, Layout, Main } from '~/components';
+import {
+	About,
+	Button,
+	HeaderWithAuth,
+	Layout,
+	Main,
+	Posts,
+} from '~/components';
 import withAuth from '~/components/hoc/withAuth';
 import { User } from '~/services';
 
@@ -154,12 +161,14 @@ const UserPage: NextPage = () => {
 						Publicações
 					</Button>
 					<Button
+						disabled
 						mode={mode === 'trophies' ? 'primary' : 'secondary'}
 						onClick={() => setMode('trophies')}
 					>
 						Trofeús
 					</Button>
 					<Button
+						disabled
 						mode={mode === 'experiences' ? 'primary' : 'secondary'}
 						onClick={() => setMode('experiences')}
 					>
@@ -167,6 +176,7 @@ const UserPage: NextPage = () => {
 					</Button>
 				</HStack>
 				{mode === 'about' && <About self={false} />}
+				{mode === 'posts' && <Posts self={false} />}
 			</Main>
 		</Layout>
 	);

@@ -13,7 +13,7 @@ const Button: React.FC<PropsWithChildren<Props>> = ({
 	...props
 }) => {
 	return (
-		<B disabled={props.isLoading} variant={mode} {...props}>
+		<B disabled={props.isLoading || disabled} variant={mode} {...props}>
 			{props.isLoading ? <Spinner /> : children}
 		</B>
 	);

@@ -1,4 +1,5 @@
 import { HStack, Spinner, Text, Textarea, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 import { useQuery } from 'react-query';
 import { User } from '~/services';
@@ -14,6 +15,7 @@ type AboutProps = {
 };
 
 const About: React.FC<AboutProps> = ({ self }) => {
+	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const {
 		data: about,
@@ -31,7 +33,14 @@ const About: React.FC<AboutProps> = ({ self }) => {
 							},
 						},
 					},
-					{},
+					self
+						? {}
+						: {
+								username: {
+									equals: router.query['username'],
+									mode: 'insensitive',
+								},
+						  },
 				)
 			)?.data?.data?.about || { address: null, description: null }
 		);
